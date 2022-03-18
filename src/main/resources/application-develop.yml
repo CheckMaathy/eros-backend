@@ -1,4 +1,24 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://mongod:secret@localhost:27017/?authSource=admin
+      uri: mongodb://mongod:secret@localhost:27017/eros_db
+  banner:
+    location: banner.txt
+    main:
+      banner-mode: 'console'
+    application:
+      name: "@project.name@"
+      version: "@project.version@"
+      description: "@project.description@"
+
+info:
+  app:
+    groupId: "@project.groupId@"
+    artifactId: "@project.artifactId@"
+    version: "@project.version@"
+    java.version: "@java.version@"
+
+server:
+  port: 8080
+  servlet:
+    context-path: /erosproject

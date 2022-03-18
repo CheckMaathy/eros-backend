@@ -1,7 +1,6 @@
 package com.erosproject.reactiveback.controller;
 
 import com.erosproject.reactiveback.model.User;
-import com.erosproject.reactiveback.repository.UserRepository;
 import com.erosproject.reactiveback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
