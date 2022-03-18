@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 @Document(collection = "user")
 @Getter
@@ -33,7 +34,7 @@ public class User {
 
     private Boolean isAdmin;
 
-    private String createdAt;
-    private String UpdatedAt;
+    private LocalDate createdAt;
+    private LocalDate UpdatedAt;
     private Boolean deleted;
 }

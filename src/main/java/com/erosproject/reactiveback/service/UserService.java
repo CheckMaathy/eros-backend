@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 public class UserService {
 
@@ -20,6 +22,8 @@ public class UserService {
     }
 
     public Mono<User> createUser(User user) {
+        user.setCreatedAt(LocalDate.now());
+        user.setDeleted(Boolean.FALSE);
         return userRepository.save(user);
     }
 
@@ -50,6 +54,7 @@ public class UserService {
         return userRepository.findById(userId)
                 .flatMap(existingUser -> {
                     existingUser.setDeleted(Boolean.TRUE);
+                    existingUser.setUpdatedAt(LocalDate.now());
                     userRepository.save(existingUser);
                     return Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT));
                 })
