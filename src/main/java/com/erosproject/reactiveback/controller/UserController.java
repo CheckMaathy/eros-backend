@@ -2,6 +2,7 @@ package com.erosproject.reactiveback.controller;
 
 import com.erosproject.reactiveback.model.User;
 import com.erosproject.reactiveback.repository.UserRepository;
+import com.erosproject.reactiveback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,66 +13,53 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
-@RestController("/v1")
+@RestController
+@RequestMapping("/api/v1")
 public class UserController {
 
+    private UserService userService;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<User> createUser(@Valid @RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
     @GetMapping("/user")
     @ResponseStatus(HttpStatus.OK)
     public Flux<User> listUsers() {
-        return userRepository.findAll();
+        return userService.findAllUsers();
     }
 
     @GetMapping("/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<ResponseEntity<User>> getUserById(@PathVariable (value = "id") String userId) {
-        return userRepository.findById(userId)
-                .map(savedUser -> ResponseEntity.ok(savedUser))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return userService.findById(userId);
     }
 
     @PutMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<ResponseEntity<User>> updateUser(@PathVariable (value = "id") String userId,
                                                  @Valid @RequestBody User user) {
-        return userRepository.findById(userId)
-                .flatMap(existingUser -> {
-                    existingUser.setName(user.getName());
-                    existingUser.setNickname(user.getNickname());
-                    existingUser.setEmail(user.getEmail());
-
-                    return userRepository.save(existingUser);
-                })
-                .map(updateUser -> new ResponseEntity<>(updateUser, HttpStatus.OK))
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return userService.updateUser(userId, user);
     }
 
     @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<ResponseEntity<Void>> deleteUser(@PathVariable (value = "id") String userId) {
-        return userRepository.findById(userId)
-                .flatMap(existingUser -> {
-                    existingUser.setDeleted(Boolean.TRUE);
-                    userRepository.save(existingUser);
-//                            .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)));
-                    return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
-                })
-                            .defaultIfEmpty(new ResponseEntity(HttpStatus.NOT_FOUND));
+        return userService.deleteUser(userId);
     }
 
     @GetMapping(value = "/stream/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Flux<User> streamUsers() {
 //        log.info("<<<<< Stream of Users >>>>>");
-        return userRepository.findAll();
+        return userService.streamUsers();
     }
 
 }
