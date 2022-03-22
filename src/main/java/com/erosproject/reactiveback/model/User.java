@@ -1,5 +1,6 @@
 package com.erosproject.reactiveback.model;
 
+import com.erosproject.reactiveback.enums.ActionEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -36,5 +37,6 @@ public class User {
 
     private LocalDate createdAt;
     private LocalDate UpdatedAt;
+    private ActionEnum lastAction;
     private Boolean deleted;
 }

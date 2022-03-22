@@ -1,5 +1,6 @@
 package com.erosproject.reactiveback.service;
 
+import com.erosproject.reactiveback.enums.ActionEnum;
 import com.erosproject.reactiveback.model.User;
 import com.erosproject.reactiveback.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class UserService {
 
     public Mono<User> createUser(User user) {
         user.setCreatedAt(LocalDate.now());
-        user.setDeleted(Boolean.FALSE);
+        user.setLastAction(ActionEnum.CREATE);
         return userRepository.save(user);
     }
 
@@ -43,6 +44,8 @@ public class UserService {
                     existingUser.setName(user.getName());
                     existingUser.setNickname(user.getNickname());
                     existingUser.setEmail(user.getEmail());
+                    existingUser.setUpdatedAt(LocalDate.now());
+                    existingUser.setLastAction(ActionEnum.UPDATE);
 
                     return userRepository.save(existingUser);
                 })
@@ -55,6 +58,7 @@ public class UserService {
                 .flatMap(existingUser -> {
                     existingUser.setDeleted(Boolean.TRUE);
                     existingUser.setUpdatedAt(LocalDate.now());
+                    existingUser.setLastAction(ActionEnum.DELETE);
                     userRepository.save(existingUser);
                     return Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT));
                 })
