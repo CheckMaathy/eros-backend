@@ -57,7 +57,6 @@ public class UserController {
     @GetMapping(value = "/stream/user", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Flux<User> streamUsers() {
-//        log.info("<<<<< Stream of Users >>>>>");
         return userService.streamUsers();
     }
 
